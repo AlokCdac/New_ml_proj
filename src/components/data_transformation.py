@@ -14,7 +14,7 @@ from sklearn.pipeline import Pipeline
 from src.utils import save_obj
 
 #feature engg class
-class feature_engineering(BaseEstimator,TransformerMixin):
+class Feature_engineering(BaseEstimator,TransformerMixin):
     def __init__(self):
         logging.info("*****************feature_engineering****************")
 
@@ -100,11 +100,11 @@ class DataTransformation():
         
     def get_feature_engg_obj(self):
             try:
-                feature_engineering=Pipeline(steps=['fe', feature_engineering()])
+                feature_engineering=Pipeline(steps=[('fe', Feature_engineering())])
                 return feature_engineering
             
             except Exception as e:
-                raise CustomException(e,sys)
+                raise CustomException(e,sys) from e
             
 
     def initiate_data_transformation(self,train_path,test_path):
@@ -113,11 +113,14 @@ class DataTransformation():
                 test_df=pd.read_csv(test_path)
 
 
-                logging.info("logginf fe objects")
+                logging.info("logging fe objects")
 
-                fe_obj=self.get_feature_engg_obj()
-                train_df=fe_obj.fit_transform(train_df)
-                test_df=fe_obj.transform(test_df)
+                fe_obj = self.get_feature_engg_obj()
+                train_df = fe_obj.fit_transform(train_df)
+                #train_df = fe_obj.fit_transform(train_df)
+                logging.info(">>>" * 20 + " Test data " + "<<<" * 20)
+                logging.info(f"Feature Enineering - Test Data ")
+                test_df = fe_obj.transform(test_df)
 
                 train_df.to_csv('train_data.csv')
                 test_df.to_csv('test_data.csv')
