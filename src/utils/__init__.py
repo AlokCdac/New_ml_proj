@@ -17,18 +17,23 @@ def save_obj(file_path,obj):
     
 
 
-def evaluate_model(X_train,y_train,X_test,y_test, models):
+def evaluate_model(X_train, y_train,X_test, y_test, models):
     try:
-        report={}
+        report = {}
 
         for i in range(len(models)):
-            model=list(models.values())[i]
-            model.fit(X_train,y_train)
+            model = list(models.values())[i]
 
-            y_test_pred= model.predict(X_test)
-            test_model_score=r2_score(y_test,y_test_pred)
-            report[list(model.keys())[i]]=test_model_score
+            model.fit(X_train, y_train)
+
+            y_test_pred = model.predict(X_test)
+
+            test_model_score = r2_score(y_test,y_test_pred )
+
+            report[list(models.keys())[i]] = test_model_score
+
         return report
 
     except Exception as e:
+        logging.info('Exception occured while saving an object')
         raise CustomException(e,sys)
